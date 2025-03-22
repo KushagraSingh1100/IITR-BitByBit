@@ -5,9 +5,8 @@ const Milestone = require("../models/milestones.js");
 
 const createPaymentLink = async (req, res) => {
   try {
-    const { employerId, milestoneId} = req.body;
+    const { employerId, milestoneId } = req.body;
 
-    
     const employer = await User.findById(employerId);
     if (!employer || employer.role !== "employer") {
       return res.status(400).json({ message: "Invalid Employer" });
@@ -18,7 +17,7 @@ const createPaymentLink = async (req, res) => {
       return res.status(404).json({ message: "Milestone not found" });
     }
     const amount = milestone.amount;
-    
+
     const cashfreeResponse = await axios.post(
       "https://sandbox.cashfree.com/pg/links",
       {
@@ -32,14 +31,14 @@ const createPaymentLink = async (req, res) => {
         link_currency: "INR",
         link_purpose: `Milestone Payment for ${milestone.title}`,
         link_id: `MS_${milestoneId}_${Date.now()}`,
-        link_notify: { "send_sms": true, "send_email": true },  
+        link_notify: { send_sms: true, send_email: true },
       },
       {
         headers: {
-            "x-client-id": process.env.CLIENT_ID,
-              "x-client-secret": process.env.CLIENT_SECRET,
-            "x-api-version": "2022-09-01",
-          "Content-Type": "application/json"
+          "x-client-id": process.env.CLIENT_ID,
+          "x-client-secret": process.env.CLIENT_SECRET,
+          "x-api-version": "2022-09-01",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -59,7 +58,7 @@ const createPaymentLink = async (req, res) => {
 
 const approveMilestone = async (req, res) => {
   try {
-    const { employerId ,milestoneId } = req.body;
+    const { employerId, milestoneId } = req.body;
 
     const milestone = await Milestone.findById(milestoneId);
     if (!milestone) {
@@ -71,13 +70,17 @@ const approveMilestone = async (req, res) => {
       return res.status(400).json({ message: "Invalid Employer" });
     }
     if (milestone.status !== "pending") {
-      return res.status(400).json({ message: "Milestone already approved or completed" });
+      return res
+        .status(400)
+        .json({ message: "Milestone already approved or completed" });
     }
 
     milestone.status = "approved";
     await milestone.save();
 
-    res.status(200).json({ success: true, message: "Milestone approved successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Milestone approved successfully" });
   } catch (error) {
     console.error("Milestone Approval Error:", error);
     res.status(500).json({ message: "Error approving milestone" });
@@ -102,16 +105,14 @@ const withdrawPayment = async (req, res) => {
       return res.status(404).json({ message: "Freelancer not found" });
     }
 
-    
     const payoutPayload = {
-      beneId: "freelancer_id", 
+      beneId: "freelancer_id",
       amount: milestone.amount,
       transferId: `TR_${milestoneId}_${Date.now()}`,
     };
 
-    
     const cashfreeResponse = await axios.post(
-      "https://payout-api.cashfree.com/payout/v1/requestTransfer",
+      "https://payout-gamma.cashfree.com/payout/v1/requestTransfer",
       payoutPayload,
       {
         headers: {
@@ -123,7 +124,6 @@ const withdrawPayment = async (req, res) => {
       }
     );
 
-   
     milestone.status = "submitted";
     await milestone.save();
 
@@ -138,5 +138,4 @@ const withdrawPayment = async (req, res) => {
   }
 };
 
-
-module.exports={createPaymentLink,approveMilestone, withdrawPayment}
+module.exports = { createPaymentLink, approveMilestone, withdrawPayment };
