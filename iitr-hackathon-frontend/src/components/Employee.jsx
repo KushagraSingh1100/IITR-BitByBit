@@ -188,7 +188,7 @@ const Employee = () => {
 
       console.log('Sending milestone data:', formattedData); // Debug log
 
-      const response = await fetch('http://localhost:8001/freework/milestone', {
+      const response = await fetch('https://iitr-hackathon-backend.onrender.com/freework/milestone', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -234,7 +234,7 @@ const Employee = () => {
       const employerId = "67de4ffede33d66551a62e8b"; // Using the default employer ID for testing
       
       // First, create the payment link
-      const response = await fetch('http://localhost:8001/freework/payment/deposit', {
+      const response = await fetch('https://iitr-hackathon-backend.onrender.com/freework/payment/deposit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -268,7 +268,7 @@ const Employee = () => {
         );
 
         // Update milestone status in database
-        const updateResponse = await fetch(`http://localhost:8001/freework/milestone/update/${milestoneId}`, {
+        const updateResponse = await fetch(`https://iitr-hackathon-backend.onrender.com/freework/milestone/update/${milestoneId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
