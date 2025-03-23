@@ -16,6 +16,12 @@ const createPaymentLink = async (req, res) => {
     if (!milestone) {
       return res.status(404).json({ message: "Milestone not found" });
     }
+
+    // Check if milestone is already funded
+    if (milestone.status === "funded" || milestone.escrowFunded) {
+      return res.status(400).json({ message: "Milestone is already funded" });
+    }
+
     const amount = milestone.amount;
 
     const cashfreeResponse = await axios.post(
@@ -42,6 +48,18 @@ const createPaymentLink = async (req, res) => {
         },
       }
     );
+
+    // Update milestone status and save to database
+    try {
+      milestone.status = "funded";
+      milestone.escrowFunded = true;
+      await milestone.save();
+      console.log("Milestone updated successfully:", milestone);
+    } catch (saveError) {
+      console.error("Error saving milestone:", saveError);
+      throw new Error("Failed to update milestone status");
+    }
+
     console.log("Cashfree Response:", cashfreeResponse.data);
 
     res.status(200).json({

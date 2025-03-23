@@ -1,6 +1,8 @@
 const express = require("express");
-const { createMilestone } = require("../controllers/milestone");
+const { createMilestone, getMilestonesByProject } = require("../controllers/milestone");
 const router = express.Router();
 
 router.post("/milestone", createMilestone);
+router.get("/milestones/:projectId", getMilestonesByProject);
+
 module.exports = router; 

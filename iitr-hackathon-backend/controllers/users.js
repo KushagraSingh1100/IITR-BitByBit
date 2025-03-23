@@ -150,7 +150,7 @@ const handleCreateProject = async (req, res) => {
       deadline,
       tags,
       amount,
-      proposals: proposals || [],
+      proposals: Number(proposals || 0),
       difficulty,
       completeStatus: completeStatus || false,
     });
