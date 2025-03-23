@@ -16,7 +16,7 @@ function Jobs() {
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8001/jobs');
+      const response = await fetch('https://iitr-hackathon-backend.onrender.com/jobs');
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch jobs');
@@ -38,7 +38,7 @@ function Jobs() {
 
   const fetchMilestones = async (projectId) => {
     try {
-      const response = await fetch(`http://localhost:8001/freework/milestones/${projectId}`);
+      const response = await fetch(`https://iitr-hackathon-backend.onrender.com/freework/milestones/${projectId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch milestones');
       }
@@ -52,7 +52,7 @@ function Jobs() {
 
   const handleMilestoneComplete = async (milestoneId) => {
     try {
-      const response = await fetch(`http://localhost:8001/freework/milestone/complete/${milestoneId}`, {
+      const response = await fetch(`https://iitr-hackathon-backend.onrender.com/freework/milestone/complete/${milestoneId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
